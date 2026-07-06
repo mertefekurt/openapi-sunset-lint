@@ -2,35 +2,32 @@
 
 ![Openapi Sunset Lint cover](assets/readme-cover.svg)
 
-Lint API deprecation notes for sunset, replacement, and migration gaps. I keep it small because this kind of check is most useful when it can run beside the work, not after the work has already shipped.
+## What it protects
 
-## Openapi Sunset Lint catches
+Lint API deprecation notes for sunset, replacement, and migration gaps. It keeps the review small: one input file, a short list of findings, and enough context to fix the line that caused the warning.
 
-- `missing-sunset` (high): sunset date is missing. Fix: Add a clear removal date..
-- `missing-replacement` (medium): replacement endpoint is missing. Fix: Document the supported migration target..
-- `no-migration-guide` (low): migration guide is missing. Fix: Link a migration guide or compatibility notes..
-
-## A normal pass
+## Run the sample
 
 ```bash
 git clone https://github.com/mertefekurt/openapi-sunset-lint.git
 cd openapi-sunset-lint
-python -m venv .venv
-source .venv/bin/activate
 python -m pip install -e ".[dev]"
 openapi-sunset-lint examples/sample.txt
-openapi-sunset-lint examples/sample.txt --json
 ```
 
-The input can be text, JSON, JSONL, or CSV. Use `--json` when another script needs the result instead of a Markdown report.
+## Signal route
 
-## A deliberately bad line
+![Workflow diagram](assets/readme-diagram.svg)
 
-```text
-deprecated /v1/search sunset missing replacement none
-```
+## Signals
 
-## Maintainer loop
+| Signal | Level | What it flags | Fix direction |
+| --- | --- | --- | --- |
+| `missing-sunset` | high | sunset date is missing | Add a clear removal date. |
+| `missing-replacement` | medium | replacement endpoint is missing | Document the supported migration target. |
+| `no-migration-guide` | low | migration guide is missing | Link a migration guide or compatibility notes. |
+
+## Small safety pass
 
 ```bash
 ruff check .
