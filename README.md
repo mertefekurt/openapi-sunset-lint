@@ -1,50 +1,39 @@
-<p align="center">
-  <img src="assets/readme-cover.svg" alt="Openapi Sunset Lint cover" width="100%" />
-</p>
-
 # Openapi Sunset Lint
 
-![stack](https://img.shields.io/badge/stack-Python-2563eb?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-16a34a?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-dc2626?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-7c3aed?style=flat-square)
+![Openapi Sunset Lint cover](assets/readme-cover.svg)
 
-Lint API deprecation notes for sunset, replacement, and migration gaps.
+Lint API deprecation notes for sunset, replacement, and migration gaps. I keep it small because this kind of check is most useful when it can run beside the work, not after the work has already shipped.
 
-## Why it exists
+## Openapi Sunset Lint catches
 
-Small review tasks are easy to skip when the signal lives in notes, spreadsheets, or loosely formatted exports. `openapi-sunset-lint` turns those checks into a repeatable command with plain findings and CI-friendly exit codes.
+- `missing-sunset` (high): sunset date is missing. Fix: Add a clear removal date..
+- `missing-replacement` (medium): replacement endpoint is missing. Fix: Document the supported migration target..
+- `no-migration-guide` (low): migration guide is missing. Fix: Link a migration guide or compatibility notes..
 
-## Quick run
+## A normal pass
 
 ```bash
+git clone https://github.com/mertefekurt/openapi-sunset-lint.git
+cd openapi-sunset-lint
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install -e ".[dev]"
 openapi-sunset-lint examples/sample.txt
-openapi-sunset-lint examples/sample.txt --json --fail-on medium
+openapi-sunset-lint examples/sample.txt --json
 ```
 
-## Rule set
+The input can be text, JSON, JSONL, or CSV. Use `--json` when another script needs the result instead of a Markdown report.
 
-| Rule | Severity | What it catches |
-| --- | --- | --- |
-| `missing-sunset` | high | sunset date is missing |
-| `missing-replacement` | medium | replacement endpoint is missing |
-| `no-migration-guide` | low | migration guide is missing |
-
-## Input
-
-The reader accepts plain text, JSON, JSONL, and CSV. That keeps it useful for hand-written notes, review exports, and small automation jobs.
-
-## Sample risky input
+## A deliberately bad line
 
 ```text
 deprecated /v1/search sunset missing replacement none
 ```
 
-## Development
+## Maintainer loop
 
 ```bash
-python -m pip install -e ".[dev]"
 ruff check .
 pytest
 python -m openapi_sunset_lint --help
 ```
-
-`cli.py` handles arguments, `core.py` reads and evaluates records, and `rules.py` keeps the Openapi Sunset Lint policy easy to review.
